@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#建立自己的镜像列表文件
+cd /etc/yum.repos.d/
+echo 'http://mirrors.163.com/centos/6/os/x86_64/' >mirror_list
+
+#备份并下载目的RPM-GPG-KEY文件,备份文件时加上日期和时间，避免覆盖原有的备份文件
+cd /etc/pki/rpm-gpg
+mv -f RPM-GPG-KEY-CentOS-6 RPM-GPG-KEY-CentOS-6_back_$(date +"%Y%m%d%H%M%S")
+wget http://mirrors.163.com/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
+
+#备份并修改CentOS-Base.repo
+cd /etc/yum.repos.d/
+cp CentOS-Base.repo CentOS-Base.repo_back_$(date +"%Y%m%d%H%M%S")
+
+sed '1,$s/^mirrorlist=.*/mirrorlist=file:\/\/\/etc\/yum.repos.d\/mirror_list/' CentOS-Base.repo >tmp_repo
+mv -f tmp_repo CentOS-Base.repo
+
+#导入新的KEY
+rpm --import http://mirrors.163.com/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
+
+echo "OK!"

@@ -1,0 +1,38 @@
+#!/bin/sh
+ 
+LOG_FILE="/var/log/freebsd-update.log"
+ 
+echo "Starting updates: `date`" | tee -a ${LOG_FILE}
+echo "***"
+echo "*** Checking for FreeBSD patches..."
+echo "***"
+/usr/sbin/freebsd-update fetch | tee -a ${LOG_FILE}
+/usr/sbin/freebsd-update install | tee -a ${LOG_FILE}
+ 
+echo "***"
+echo "*** Updating ports tree..."
+echo "***"
+/usr/sbin/portsnap fetch update | tee -a ${LOG_FILE}
+ 
+echo "***"
+echo "*** Patching for dual stack PHP"
+echo "***"
+. $(dirname $0)/../patches/patch_php.sh
+echo "=> done."
+ 
+echo "***"
+echo "*** Looking for ports to update..."
+echo "***"
+/usr/local/sbin/portmaster -a --no-confirm | tee -a ${LOG_FILE}
+ 
+echo "***"
+echo "*** Linking installed PHP"
+echo "***"
+##. $(dirname $0)/../patches/patch_php.sh
+echo "=> done."
+ 
+echo "***"
+echo "*** Checking installed ports for known security problems..."
+echo "***"
+/usr/local/sbin/portaudit -Fva | tee -a ${LOG_FILE}
+echo "Finished updates: `date`" | tee -a ${LOG_FILE}
