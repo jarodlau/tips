@@ -1,0 +1,14 @@
+#使用rsync备份数据
+源目录
+~ /media/wine/TDdownloads/ /media/wine/music/ /media/wine/tutorial/
+目的目录
+/media/backup/TDdownloads/ media/backup/music/ /media/backup/turorial/
+
+增量备份,旧的数据不删除:
+# rsync -avh --progress SRC DEST
+
+数据同步,2个目录内容保持一致:
+# rsync -avh --progress --delete  SRC DECT
+
+详细参考 man rsync
+

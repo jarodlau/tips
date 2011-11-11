@@ -1,0 +1,16 @@
+diff -urN mysql55-server-old/Makefile mysql55-server/Makefile
+--- mysql55-server-old/Makefile	2011-09-10 14:38:44.000000000 +0000
++++ mysql55-server/Makefile	2011-09-10 15:16:00.000000000 +0000
+@@ -53,6 +53,12 @@
+ .if defined(WITH_FASTMTX)
+ CMAKE_ARGS+=	-DWITH_FAST_MUTEXES=1
+ .endif
++.if defined(WITH_CHARSET) && ${WITH_CHARSET} != ""
++CMAKE_ARGS+=	-DDEFAULT_CHARSET=${WITH_CHARSET}
++.endif
++.if defined(WITH_COLLATION) && ${WITH_COLLATION} != ""
++CMAKE_ARGS+=	-DDEFAULT_COLLATION=${WITH_COLLATION}
++.endif
+ 
+ # MySQL-Server part
+ .if !defined(CLIENT_ONLY)
